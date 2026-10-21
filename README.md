@@ -1,4 +1,4 @@
-# PIC-IAR: Detecção de depressão e ansiedade em redes sociais
+# Detecção de Depressão e Ansiedade em Redes Sociais: Evoluindo do Aprendizado de Máquina Clássico para Modelos de Linguagem de Grande Escala
 
 **PIC_PIBIC_11** · Edital PIC IA e Robótica 2026 · Ciência da Computação (UniCEUB)
 Cronograma: agosto/2026 a julho/2027
@@ -12,20 +12,40 @@ postagens de redes sociais em português, com análise de viés e uma API REST d
 
 ## Início rápido (local)
 
-```bash
-# 1. Ambiente (Python 3.12) com uv: https://docs.astral.sh/uv/
-uv venv --python 3.12
-source .venv/bin/activate
+**Windows (PowerShell)**: crie o ambiente virtual **fora do OneDrive**.
 
-# 2. Dependências (núcleo + API + ferramentas de dev) e o pacote em modo editável
+```powershell
+# 1. Ambiente Python 3.12 com uv (https://docs.astral.sh/uv/)
+uv venv --python 3.12 C:\venvs\pic-iar
+C:\venvs\pic-iar\Scripts\Activate.ps1
+
+# 2. PyTorch com GPU NVIDIA (se não tiver GPU, troque cu126 por cpu).
+#    No Windows o pip padrão instala torch SÓ para CPU.
+uv pip install torch==2.9.0 --index-url https://download.pytorch.org/whl/cu126
+
+# 3. Demais dependências e o pacote em modo editável
 uv pip install -r requirements-dev.txt
 uv pip install -e .
 
-# 3. Confira o ambiente (versões, GPU, bf16)
+# 4. Confira o ambiente (versões, GPU, bf16)
 python scripts/check_env.py
 ```
 
-Sem `uv`: `python3.12 -m venv .venv && source .venv/bin/activate && pip install -r requirements-dev.txt`.
+**Linux/macOS**:
+
+```bash
+uv venv --python 3.12 && source .venv/bin/activate
+uv pip install -r requirements-dev.txt && uv pip install -e .
+python scripts/check_env.py
+```
+
+Sem `uv`: `python -m venv <pasta> && <pasta>/Scripts/activate && pip install -r requirements-dev.txt`
+(no Windows, instale o torch com o comando do passo 2 antes).
+
+> `requirements.lock.txt` foi gerado para Linux x86_64 e traz pacotes `nvidia-*` que não
+> instalam no Windows. No Windows use os arquivos `requirements*.txt`.
+
+**VS Code**: veja a seção 7 de `docs/AMBIENTE.md` (extensões, interpretador, onde rodar cada tarefa).
 
 - **Google Colab**: `grep -v '^torch' requirements.txt > /tmp/req.txt && pip install -r /tmp/req.txt`
   (mantém o torch que o Colab já traz).

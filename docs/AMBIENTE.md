@@ -87,7 +87,41 @@ A instalação completa com GPU **não** foi executada na preparação deste rep
 - **Runtime do Databricks** (17.3 LTS vs 18.2) e a data de fim de suporte em relação a jul/2027.
 - **Licença** do repositório (o pré-projeto prevê MIT na publicação da API).
 
-## 7. API REST (Fase 4, mar–abr/2027)
+## 7. VS Code e Windows
+
+O VS Code é só o editor e o cliente do notebook: o desempenho vem de **onde o kernel roda**,
+não do editor. Não há perda de desempenho por usá-lo no lugar do JupyterLab.
+
+**Extensões**: Python, Jupyter, Pylance e Ruff (Microsoft/Astral); *Databricks* (para o
+cluster) e *Google Colab* (para GPU do Colab). Selecione o interpretador do ambiente fora do
+OneDrive (`Ctrl+Shift+P` → *Python: Select Interpreter*) e use o mesmo como kernel do notebook.
+
+**Onde rodar cada tarefa**
+
+| Tarefa | Onde | Observação |
+|---|---|---|
+| EDA, pré-processamento leve, baselines clássicos, testes, API | Local (VS Code) | CPU basta. |
+| Prototipagem e fine-tuning pequeno | GPU local ou Colab | Extensão do Colab liga o `.ipynb` local a um runtime do Colab; GPUs premium exigem Colab Pro. |
+| Pré-processamento em Spark | Databricks Connect (VS Code) | Só operações de DataFrame rodam no cluster (exige Databricks Runtime ≥ 13.3). |
+| Fine-tuning e grid search no A10/H100 | Notebook ou job **no próprio Databricks** | Na extensão do VS Code, "todo o código roda localmente, exceto operações de DataFrame": um `Trainer` do PyTorch numa célula usaria a máquina local, **não** a GPU do cluster. |
+
+**Limitações práticas**
+
+- **GPU do notebook:** verifique com `nvidia-smi`. Com 6 GB de VRAM, BERTimbau e mBERT cabem com
+  `fp16`, batch pequeno e `gradient_accumulation_steps`; o XLM-RoBERTa-base (270M) pode não
+  caber, então rode-o no Colab ou no Databricks.
+- **Treino longo em script, não em célula:** notebook morre se o computador hibernar ou o VS Code
+  fechar. Rode o grid search como script (`python -m ...`) com logs no MLflow/W&B.
+- **Saída de célula:** barras de progresso e prints grandes deixam o notebook lento. Use
+  `tqdm.auto` e registre métricas no W&B em vez de imprimir.
+- **Windows:** use `dataloader_num_workers=0` em notebooks (multiprocessamento usa *spawn*);
+  scripts precisam de `if __name__ == "__main__":`; evite `torch.compile` e `flash-attn`
+  (sem suporte oficial no Windows) e não use `make` (sem ele, rode os comandos do README).
+- **PyTorch no Windows:** o `pip install torch` padrão instala a versão **CPU**. Instale com o
+  índice CUDA (README, passo 2). Requer driver NVIDIA recente (`nvidia-smi`).
+- **OneDrive:** mantenha `.venv`, `data/` e checkpoints fora da pasta sincronizada.
+
+## 8. API REST (Fase 4, mar–abr/2027)
 
 Para a imagem Docker use `python:3.12-slim` e instale o torch **CPU** (índice
 `https://download.pytorch.org/whl/cpu`), o que reduz a imagem de vários GB para algumas centenas
