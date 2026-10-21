@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+build/
+dist/
+
+# Segredos e credenciais (NUNCA versionar)
+.env
+*.key
+*.pem
+.databrickscfg
+
+# Dados: corpora de saude mental sao sensiveis (LGPD / CEP). Nao versionar dados.
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+*.arrow
+*.parquet
+*.csv
+*.jsonl
+
+# Modelos e artefatos de treino (publicar no Hugging Face Hub, nao no Git)
+checkpoints/
+outputs/
+models/
+runs/
+wandb/
+mlruns/
+*.safetensors
+*.bin
+*.pt
+*.pth
+*.ckpt
+
+# Editor / SO
+.vscode/
+.idea/
+.DS_Store

@@ -1,0 +1,21 @@
+# Ajustes para o cluster Databricks (GPU A10/H100, via UniCEUB/Databricks University Alliance).
+#
+# Runtime recomendado: Databricks Runtime 17.3 LTS ML (GPU) -> torch 2.7.0, CUDA 12.6.
+# NAO reinstale torch no cluster: use o que o runtime traz. Instale so o que falta/difere:
+#
+#   %pip install -r requirements-databricks.txt
+#   dbutils.library.restartPython()
+#
+# Se o CloudLabs oferecer o Runtime 18.2 ML, transformers (4.57.1) e huggingface-hub (0.36.0)
+# ja vem na versao certa; so instale as linhas de fairlearn/wandb/emoji/ftfy.
+#
+# ATENCAO: este arquivo ainda NAO foi testado no cluster real. Valide com
+# `python scripts/check_env.py --lenient` logo apos o primeiro %pip install.
+
+transformers==4.57.6
+tokenizers==0.22.2
+huggingface_hub==0.36.2
+fairlearn>=0.13
+wandb
+emoji
+ftfy

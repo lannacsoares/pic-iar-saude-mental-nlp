@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pic-iar"
+version = "0.1.0"
+description = "PIC_PIBIC_11 (UniCEUB): deteccao de depressao e ansiedade em redes sociais, de ML classico a transformers em portugues."
+readme = "README.md"
+requires-python = ">=3.11"
+# Dependencias ficam fixadas em requirements*.txt (ambiente reprodutivel), nao aqui.
+dependencies = []
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests", "scripts"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
